@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistiques Soirée Parisienne</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      height: 200vh;
+      background: linear-gradient(135deg, #3494e6, #ec6ead);
+      color: #ffffff;
+    }
+
+    .interactive-background {
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      transition: background-color 0.5s ease-in-out;
+    }
+
+    .navbar {
+      background: linear-gradient(45deg, #4b6cb7, #182848);
+      transition: background-color 0.5s ease-in-out;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-dark .navbar-brand,
+    .navbar-dark .navbar-nav .nav-link {
+      color: #ffffff;
+      font-weight: bold;
+    }
+
+    .navbar-dark .navbar-toggler-icon {
+      background-color: #ffffff;
+    }
+
+    .navbar-toggler:focus,
+    .navbar-toggler:active {
+      outline: none;
+    }
+
+    .navbar-toggler {
+      border: none;
+    }
+
+    .navbar-toggler-icon {
+      background: #fff;
+      border-radius: 2px;
+    }
+
+    .navbar-toggler:hover .navbar-toggler-icon {
+      background: #f8f9fa;
+    }
+
+    .header-section {
+      text-align: center;
+      padding: 50px 0;
+      color: #ffffff;
+      background: linear-gradient(45deg, #4b6cb7, #182848);
+    }
+
+    .site-intro {
+      position: relative;
+      overflow: hidden;
+      padding: 20px;
+      border-radius: 20px;
+      margin-top: 20px;
+      color: #ffffff;
+      text-align: center;
+    }
+
+    .site-intro p {
+      font-size: 1.5rem;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+    }
+
+    .red-ball {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: red;
+      border-radius: 50%;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      transition: width 1s, height 1s;
+    }
+
+    .site-intro:hover .red-ball {
+      width: 120%;
+      height: 120%;
+    }
+
+    .section {
+      padding: 80px 0;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: #000000;
+    }
+
+    .chart-container {
+      position: relative;
+      margin: auto;
+      width: 80%;
+    }
+
+    .divider {
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(45deg, #4b6cb7, #182848);
+      margin: 40px 0;
+    }
+
+    .footer {
+      background-color: #343a40;
+      color: #ffffff;
+      padding: 10px 0;
+      text-align: center;
+    }
+
+    .footer iframe {
+      margin: 0 40px;
+    }
+
+    .sales-analysis-text {
+      padding: 20px;
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 20px;
+    }
+
+    .sales-analysis-text p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #000000;
+    }
+
+    .sales-analysis-text ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sales-analysis-text li {
+      font-weight: bold;
+      color: #3494e6;
+    }
+
+    .animated-text h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #000000;
+    }
+
+    .animated-text p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      color: #000000;
+    }
+
+    .tooltip {
+      visibility: hidden;
+      position: absolute;
+      z-index: 1;
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+      /* Ajustez la valeur de rembourrage selon vos préférences */
+      border-radius: 10px;
+      /* Ajustez la valeur du rayon de bordure selon vos préférences */
+      border: 1px solid #ccc;
+      width: 400px;
+      /* Ajustez la largeur selon vos préférences */
+      transition: opacity 0.3s;
+      opacity: 0;
+      left: 30%;
+      /* Positionnement à droite de la souris */
+      top: 50%;
+      /* Alignement au centre de la souris */
+      transform: translate(0, -50%);
+      /* Ajustement pour le centrage vertical */
+    }
+
+    #stats-frequentation:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    #interpretation-resultats:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    #analyse-periode:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    }
+    #description-graphique:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+    #interpretation-ressources:hover .tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="interactive-background" id="interactiveBackground"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">Data visualisation</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="a propos.html">À propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ressource.html">Ressources</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="header-section">
+    <h1 class="display-4">Exploration Créative</h1>
+    <p class="lead">Découvrez les analyses approfondies de notre événement exclusif à Paris.</p>
+  </div>
+
+  <div class="site-intro">
+    <div class="red-ball"></div>
+    <p>Explorez avec nous les coulisses de l'événement incontournable du 29/10/23 à Paris, où la magie de la nuit se
+      mêle à l'excitation des chiffres ! Notre site vous offre une plongée exclusive dans l'analyse de la vente des
+      billets, révélant les tendances passionnantes qui façonnent la participation à cette fête captivante. Découvrez
+      également les chiffres clés sur l'affluence, capturant l'essence même de cette nuit féérique. Préparez-vous à être
+      immergé dans une expérience unique, où les données deviennent le reflet de l'effervescence et de la popularité
+      grandissante de cet événement parisien emblématique. Plongez dans l'analyse minutieuse des ventes de billets et de
+      l'effectif, pour une perspective inédite sur cette célébration nocturne exceptionnelle !</p>
+  </div>
+
+  <div id="accueil" class="section">
+    <div class="container text-center">
+      <h2 class="section-title">Statistiques de Fréquentation</h2>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="sales-analysis-text">
+            <p>
+              L'analyse quotidienne des ventes de billets constitue une étape cruciale dans la compréhension de la
+              fréquentation de notre événement techno à Paris, qui s'est déroulé entre le 26 septembre 2023 et le 29
+              octobre 2023. Cette exploration permettra de tracer une courbe temporelle détaillée, offrant ainsi des
+              insights précieux sur la dynamique des ventes jour après jour.
+            </p>
+            <ul>
+              <li id="stats-frequentation" style="position: relative;"> - Graphe des statistiques de fréquentation
+                <div class="tooltip">
+                  Le graphique élaboré présente une visualisation claire de l'évolution quotidienne des ventes de
+                  billets pour notre soirée techno. Chaque jour de la période analysée est représenté sur l'axe des x,
+                  tandis que l'axe des y illustre le nombre de billets vendus. La variation des tendances au fil du
+                  temps se dévoile ainsi de manière graphique, permettant une interprétation aisée des fluctuations de
+                  la fréquentation.
+                </div>
+              </li>
+              <li id="interpretation-resultats" style="position: relative;"> - Interprétation des résultats
+              <div class="tooltip">
+                Les pics et creux sur le graphique correspondent aux jours où la demande a été la plus forte ou la plus faible. Ces fluctuations peuvent être influencées par divers facteurs tels que des promotions spéciales, des artistes renommés, ou encore des événements concurrents. Les jours de la semaine peuvent également jouer un rôle prépondérant, certains jours attirant naturellement davantage de participants que d'autres. En scrutant attentivement le graphe, nous pourrons identifier des tendances récurrentes, des moments clés, et des opportunités d'optimisation. Par exemple, des campagnes marketing spécifiques pourraient être ajustées en fonction des jours de la semaine qui présentent une demande plus faible, tandis que des performances artistiques exceptionnelles pourraient être mises en avant pour capitaliser sur les jours de pointe. 
+              </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="chart-container" data-aos="fade-left">
+            <div class="flourish-embed flourish-scatter" data-src="visualisation/16087111">
+              <script src="https://public.flourish.studio/resources/embed.js"></script>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </div>
+  <!-- ... (Autres balises HTML inchangées) ... -->
+
+  <div id="apropos" class="section">
+    <div class="container-fluid text-center">
+      <h2 class="section-title">Évolution des Effectifs</h2>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 order-md-1">
+          <div class="chart-container" data-aos="fade-right">
+            <div class="flourish-embed flourish-pictogram" data-src="visualisation/16086241">
+                <script src="https://public.flourish.studio/resources/embed.js"></script></div>
+          </div>
+        </div>
+        <div class="col-md-6 order-md-2">
+          <div class="sales-analysis-text">
+            <div class="animated-text fade-in">
+              <h3>Analyses Temporelles</h3>
+              <p>
+                Lors de l'exploration de l'évolution des entrées pendant la soirée techno parisienne, une séquence
+                temporelle de minuit à 1h30 a captivé notre attention. À l'aide d'un graphique à barres multiples, nous
+                avons décrypté la dynamique unique de cette période, révélant une augmentation remarquable du nombre de
+                participants. Cette analyse approfondie plonge dans les pulsations nocturnes de l'événement, mettant en
+                lumière les variations subtiles qui ont marqué cette tranche horaire cruciale.
+              </p>
+              <ul>
+                <li id="analyse-periode" style="position: relative;"> - Analyse de la Période (Minuit à 1h30)
+                  <div class="tooltip">
+                    Analyse de la Période (Minuit à 1h30) : La période entre minuit et 1h30 du matin se distingue par une série de barres dont les hauteurs croissantes traduisent une affluence en constante augmentation. La première barre, représentant minuit, peut montrer un début de participation, mais les barres suivantes, en particulier entre 00h15 et 1h30, révèlent un crescendo significatif.
+                    Chaque segment de ces barres multiples constitue une fenêtre de 15 minutes, offrant un regard précis sur les moments où l'atmosphère s'est électrisée. L'analyse fine révèle un dynamisme particulier entre minuit et 1h30, illustrant une réponse positive et croissante du public à cette phase de la soirée.
+
+                  </div>
+                </li>
+                <li id="description-graphique" style="position: relative;"> - Description du Graphique à Barres Multiples
+                  <div class="tooltip">
+                     Le graphique à barres multiples offre une représentation visuelle détaillée de l'évolution des entrées. Chaque barre, subdivisée en sections de 15 minutes, capture les nuances temporelles de 23h15 à 3h00 du matin. Les variations de hauteur dans chaque section reflètent le flux constant des participants, tandis que des moments particuliers sont mis en évidence par des pics distincts. 
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+  </div>
+
+  <div id="ressources" class="section">
+    <div class="container-fluid text-center">
+      <h2 class="section-title">Répartition des Scans</h2>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-6 order-md-1">
+          <div class="sales-analysis-text">
+            <div class="animated-text fade-in">
+              <h3>Exploration Visuelle</h3>
+              <p>
+                L'analyse de la répartition des scans effectuée par les employeurs Pierre, Paul, Adriana, et Alice offre
+                une vision détaillée de l'activité de chacun durant la soirée techno à Paris. Le graphique utilisé, une
+                grille de diagrammes circulaires, permet de visualiser de manière claire et concise combien de scans ont
+                été réalisés par chaque employeur, ainsi que la répartition spécifique de ces scans.
+              </p>
+              <ul>
+        <li id="interpretation-ressources" style="position: relative;"> - Interprétation des Résultats
+                  <div class="tooltip">
+                    Chaque diagramme circulaire dans la grille offre une vision immédiate du nombre de scans effectués pour chaque client, en mettant en évidence le nombre de scans liés à la catégorie "Absent". La taille du segment "Absent" dans chaque diagramme reflète le nombre de clients absents selon les scans réalisés par tous les employeurs. Cette approche permet d'identifier rapidement les clients absents, indépendamment de l'employeur qui a effectué le scan. Les variations dans la taille des segments "Absent" peuvent indiquer des tendances ou des points d'attention particuliers, orientant ainsi les efforts pour optimiser la participation des clients lors des événements futurs.
+
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 order-md-2">
+          <div class="chart-container" data-aos="fade-left">
+            <div class="flourish-embed flourish-chart" data-src="visualisation/16056611">
+                <script src="https://public.flourish.studio/resources/embed.js"></script>
+                
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="personal-info">
+      <p style="font-size: 1.6rem; font-weight: bold; color: #ffffff;">Nom d'étudiant : Abdeslam MENCHI</p>
+      <p style="font-size: 1.4rem; color: #ffffff;">Master: Cen 1</p>
+      <p style="font-size: 1.2rem; color: #ffffff;"><span class="hidden-email" style="color: #ffffff;">
+        <a href="https://mail.google.com/mail/u/0/#inbox" target="_blank">
+        <img
+            src="Image/EMAIL.png"  alt="Email Icon" height="20" width="20"></span>
+        </a>Abdeslam.menchi@etud.univ-paris8.fr
+      </p>
+    </div>
+    <div class="logo-section">
+      <img src="FOOTER/CEN.jpg" alt="Logo 1" height="150" width="250">
+      <img src="FOOTER/logoP8_Web.jpg" alt="Logo 2" height="150" width="250">
+    </div>
+  </div>
+
+  <script>
+    AOS.init({
+      duration: 1000,
+      easing: 'ease-in-out',
+      once: true
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const background = document.getElementById('interactiveBackground');
+      const navbar = document.querySelector('.navbar');
+
+      window.addEventListener('scroll', function () {
+        const scrolled = window.scrollY;
+
+        if (scrolled > 50) {
+          navbar.style.backgroundColor = '#0056b3';
+        } else {
+          navbar.style.backgroundColor = 'transparent';
+        }
+      });
+    });
+  </script>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
