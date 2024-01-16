@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistiques Soirée Parisienne</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #3494e6, #ec6ead);
+      color: #ffffff;
+      position: relative;
+    }
+
+    .interactive-background {
+      height: 100%;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+      transition: background-color 0.5s ease-in-out;
+    }
+
+    .header-section {
+      text-align: center;
+      padding: 50px 0;
+      color: #ffffff;
+      background: linear-gradient(45deg, #4b6cb7, #182848);
+    }
+
+    .presentation-section {
+      text-align: center;
+      padding: 30px 20px;
+      margin-bottom: 100px;
+      font-size: 1.5rem;
+      background-color: #2c3e50;
+      border-radius: 10px;
+      margin: 20px;
+    }
+
+    .presentation-section h2 {
+      color: #ffffff;
+    }
+
+    .presentation-section p {
+      color: #ecf0f1;
+    }
+
+    /* Nouvelle classe pour la section du bouton "Retour" */
+    .footer-section {
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="interactive-background" id="interactiveBackground"></div>
+
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <a class="navbar-brand" href="#">Data visualisation</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="Exploration Créative.html">Accueil</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">À propos</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ressource.html">Ressources</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="header-section">
+    <h1 class="display-4">Exploration Créative</h1>
+    <p class="lead">Découvrez les analyses approfondies de notre événement exclusif à Paris.</p>
+  </div>
+
+  <div class="presentation-section">
+    <h2>Présentation du projet</h2>
+    <p>"événement exclusif à Paris" est un site web créé par Abdeslam MENCHI. Il s’inscrit dans le cadre d’un projet
+      d’étude du master 1 CEN à l’université Paris 8. Pour ce cours de Datavisualisation, J’ai souhaité traiter le thème
+      “événement exclusif à Paris” à travers la création de divers graphiques. Pour se faire, j’ai exploité des bases
+      de données d’un événement, que j’ai transformé en graphique interactif grâce à des solutions telles que
+      Datawrapper et Flourish mais j’ai préféré beaucoup plus Flourish.
+    
+    je ne peux pas publier les données sources car sont des donnée privé</p>
+  </div>
+
+  <!-- Section du bouton "Retour" -->
+  <section class="footer-section">
+    <a href="Exploration Créative.html" class="btn btn-primary">Retour</a>
+  </section>
+
+  <script>
+    AOS.init({
+      duration: 1000,
+      easing: 'ease-in-out',
+      once: true
+    });
+
+    $(document).ready(function () {
+      const background = document.getElementById('interactiveBackground');
+      const navbar = document.querySelector('.navbar');
+
+      $(window).on('scroll', function () {
+        const scrolled = window.scrollY;
+
+        if (scrolled > 50) {
+          navbar.style.backgroundColor = '#0056b3';
+        } else {
+          navbar.style.backgroundColor = 'transparent';
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
